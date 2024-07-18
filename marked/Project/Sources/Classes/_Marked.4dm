@@ -30,6 +30,10 @@ Class constructor
 	
 	//MARK:-private
 	
+Function isPreemptive() : Boolean
+	
+	return Get process activity:C1495(Processes only:K5:35).processes.query("number == :1"; Current process:C322)[0].preemptive
+	
 Function _createTempFolder()->$folder : 4D:C1709.Folder
 	
 	var $tempFolder : 4D:C1709.Folder
@@ -147,6 +151,38 @@ Function generate($path : Text)->$htmlFile : 4D:C1709.File
 	
 Function parse($mdFile : 4D:C1709.File)->$htmlFile : 4D:C1709.File
 	
-	This:C1470._md:=$mdFile.getText()
+	If (Not:C34(This:C1470.isPreemptive()))
+		
+		This:C1470._md:=$mdFile.getText()
+		//%T-
+		$htmlFile:=WA Run offscreen area:C1727(This:C1470)
+		//%T+
+	Else 
+		
+		var $signal : 4D:C1709.Signal
+		$signal:=New signal:C1641
+		
+		$workerName:=Current method name:C684+"#"+Generate UUID:C1066
+		
+		CALL WORKER:C1389($workerName; This:C1470._parse; $mdFile; $signal)
+		
+		$signal.wait()
+		
+		$htmlFile:=$signal.htmlFile
+		
+	End if 
 	
-	$htmlFile:=WA Run offscreen area:C1727(This:C1470)
+Function _parse($mdFile : 4D:C1709.File; $signal : 4D:C1709.Signal)
+	
+	$this:=cs:C1710._Marked.new()
+	$this._md:=$mdFile.getText()
+	
+	$htmlFile:=WA Run offscreen area:C1727($this)
+	
+	Use ($signal)
+		$signal.htmlFile:=$htmlFile
+	End use 
+	
+	$signal.trigger()
+	
+	KILL WORKER:C1390

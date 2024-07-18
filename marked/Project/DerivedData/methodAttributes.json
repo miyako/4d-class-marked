@@ -1,7 +1,10 @@
 {
 	"methods": {
 		"TEST": {
-			"timeStamp": "2024-02-08T01:02:07Z"
+			"timeStamp": "2024-07-18T00:50:24Z",
+			"attributes": {
+				"preemptive": "capable"
+			}
 		}
 	}
 }
