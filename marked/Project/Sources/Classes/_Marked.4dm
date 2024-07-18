@@ -9,7 +9,7 @@ Class constructor
 			This:C1470._contentsFolder:=Folder:C1567(Application file:C491; fk platform path:K87:2).folder("Contents")
 		: (Is Windows:C1573)
 			This:C1470._platform:="Windows"
-			This:C1470._contentsFolder:=File:C1566(Application file:C491; fk platform path:K87:2).parent.folder("Contents")
+			This:C1470._contentsFolder:=File:C1566(Application file:C491; fk platform path:K87:2).parent
 	End case 
 	
 	This:C1470._rootFolderName:="documentation"
